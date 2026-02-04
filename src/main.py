@@ -105,6 +105,11 @@ def main():
     jira.add_argument("code", help="Task code")
     jira.set_defaults(func=task_controller.jira_open)
 
+    board = task_sub.add_parser("board")
+    board.add_argument("--sprint", help="Filter by sprint code")
+    board.add_argument("--vertical", "-v", action="store_true", help="Display board vertically")
+    board.set_defaults(func=task_controller.board)
+
     # ---------------- Sprint CLI ----------------
     sprint = sub.add_parser("sprint")
     sprint_sub = sprint.add_subparsers(required=True)

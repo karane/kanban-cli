@@ -5,6 +5,7 @@ A command-line kanban board management tool for tracking tasks and sprints from 
 ## Features
 
 - **Task Management**: Create, list, move, show, edit, and remove tasks
+- **Kanban Board View**: Visual board display with columns for each status
 - **Sprint Management**: Organize tasks into sprints with start/end dates
 - **Status Tracking**: Track tasks through workflow states (TODO → IN_PROGRESS → REVIEW → TESTING_DEPLOYMENT → DONE)
 - **Sprint Reports**: View sprint progress and completion metrics
@@ -45,7 +46,7 @@ kbcli task add --code T-2 --name "Create API endpoints" --sprint S-1
 kbcli task add --code T-3 --name "Build frontend" --sprint S-1
 
 # 3. View your board
-kbcli task list
+kbcli task board
 
 # 4. Start working on a task
 kbcli task move T-1 IN_PROGRESS
@@ -226,6 +227,70 @@ kbcli task jira-open <code>
 **Example:**
 ```bash
 kbcli task jira-open T-100
+```
+
+#### View Kanban board
+```bash
+kbcli task board [options]
+```
+
+Displays a visual Kanban board with all tasks organized in columns by status. The board adapts to your terminal width.
+
+**Options:**
+| Option | Description |
+|--------|-------------|
+| `--sprint` | Filter to show only tasks from a specific sprint |
+| `--vertical`, `-v` | Display board vertically (stacked sections) |
+
+**Examples:**
+```bash
+# View all tasks on the board (horizontal columns)
+kbcli task board
+
+# View only tasks in a specific sprint
+kbcli task board --sprint S-1
+
+# View board in vertical layout
+kbcli task board --vertical
+kbcli task board -v --sprint S-1
+```
+
+**Horizontal output (default):**
+```
+                              📋 KANBAN BOARD
+══════════════════════════════════════════════════════════════════════════════
+│   📋 TODO (2)    │ 🔄 PROGRESS (1) │  👀 REVIEW (0)  │ 🧪 TESTING (0)  │  ✅ DONE (1)   │
+├──────────────────┼─────────────────┼─────────────────┼─────────────────┼────────────────┤
+│ T-2 Create API…  │ T-1 Setup data… │                 │                 │ T-4 Init proj… │
+│ T-3 Build front… │                 │                 │                 │                │
+└──────────────────┴─────────────────┴─────────────────┴─────────────────┴────────────────┘
+```
+
+**Vertical output (`--vertical`):**
+```
+                              📋 KANBAN BOARD
+══════════════════════════════════════════════════════════════════════════════
+
+📋 TODO (2)
+────────────────────────────────────────
+  T-2 Create API endpoints 💬
+  T-3 Build frontend
+
+🔄 IN_PROGRESS (1)
+────────────────────────────────────────
+  T-1 Setup database
+
+👀 REVIEW (0)
+────────────────────────────────────────
+  (no tasks)
+
+🧪 TESTING_DEPLOYMENT (0)
+────────────────────────────────────────
+  (no tasks)
+
+✅ DONE (1)
+────────────────────────────────────────
+  T-4 Init project 🔗
 ```
 
 ### Sprint Commands

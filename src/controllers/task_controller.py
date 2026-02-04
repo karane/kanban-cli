@@ -96,6 +96,16 @@ class TaskController:
 
         self.view.list(tasks)
 
+    def board(self, args):
+        tasks = self.service.list()
+        sprint_filter = getattr(args, "sprint", None)
+        vertical = getattr(args, "vertical", False)
+
+        if sprint_filter:
+            tasks = [t for t in tasks if t.sprint_code == sprint_filter]
+
+        self.view.board(tasks, sprint_filter, vertical=vertical)
+
     def move(self, args):
         try:
             new_status = Status(args.status)
