@@ -82,6 +82,7 @@ def main():
     lst = task_sub.add_parser("list")
     lst.add_argument("--status")
     lst.add_argument("--sprint")
+    lst.add_argument("--filter", "-f", help="Search tasks by keyword (matches code, name, comment)")
     lst.set_defaults(func=task_controller.list)
 
     move = task_sub.add_parser("move")
@@ -107,6 +108,7 @@ def main():
 
     board = task_sub.add_parser("board")
     board.add_argument("--sprint", help="Filter by sprint code")
+    board.add_argument("--filter", "-f", help="Search tasks by keyword (matches code, name, comment)")
     board.add_argument("--vertical", "-v", action="store_true", help="Display board vertically")
     board.set_defaults(func=task_controller.board)
 

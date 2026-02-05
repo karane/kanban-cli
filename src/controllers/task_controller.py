@@ -14,7 +14,7 @@ from src.colors import Colors, colorize, status_color
 
 
 class TaskController:
-    def __init__(self, service=None, view=None, storage_path="kanban.json"):
+    def __init__(self, service=None, view=None, storage_path=None):
         if service is None:
             storage = storage_path if hasattr(storage_path, "load") else JsonStorage(storage_path)
             repo = TaskRepository(storage)
@@ -93,6 +93,8 @@ class TaskController:
             tasks = [t for t in tasks if t.status == Status(args.status)]
         if getattr(args, "sprint", None):
             tasks = [t for t in tasks if t.sprint_code == args.sprint]
+        if getattr(args, "filter", None):
+            tasks = self._filter_tasks(tasks, args.filter)
 
         self.view.list(tasks)
 
@@ -103,6 +105,8 @@ class TaskController:
 
         if sprint_filter:
             tasks = [t for t in tasks if t.sprint_code == sprint_filter]
+        if getattr(args, "filter", None):
+            tasks = self._filter_tasks(tasks, args.filter)
 
         self.view.board(tasks, sprint_filter, vertical=vertical)
 
@@ -242,6 +246,15 @@ class TaskController:
             jira_link=values.get("jira_link"),
             comment=values.get("comment"),
         )
+
+    def _filter_tasks(self, tasks, keyword):
+        """Filter tasks by case-insensitive keyword match on code or name."""
+        keyword = keyword.lower()
+        return [
+            t for t in tasks
+            if keyword in t.code.lower()
+            or keyword in t.name.lower()
+        ]
 
     # ---------- Helpers for tests ----------
     def add_task(self, code, name, status="TODO", sprint=None):
